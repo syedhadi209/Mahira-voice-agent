@@ -8,7 +8,7 @@ export async function getToken(roomName: string, participantName: string) {
 
   const at = new AccessToken(apiKey, apiSecret, {
     identity: participantName,
-    ttl: 3600, // 1 hour
+    ttl: 3600,
   });
 
   // allow publishing mic + subscribing

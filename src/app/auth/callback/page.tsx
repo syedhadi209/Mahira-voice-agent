@@ -15,9 +15,9 @@ export default function AuthCallbackPage() {
 
       if (user) {
         // ✅ Step 1: Ensure profile record exists or is updated
-        await supabase
-          .from("profiles")
-          .upsert({ id: user.id, email: user.email });
+        // await supabase
+        //   .from("profiles")
+        //   .upsert({ id: user.id, email: user.email });
 
         const isOnboardingDone =
           user.user_metadata?.is_onboarding_done ?? false;
