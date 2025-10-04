@@ -18,6 +18,7 @@ const makeStyles = () => ({
     width: "200px",
     height: "200px",
     mb: "100px",
+    ml: "50px",
   },
   circles: (
     opacity: string,
