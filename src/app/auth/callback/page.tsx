@@ -14,12 +14,23 @@ export default function AuthCallbackPage() {
       const user = data.user;
 
       if (user) {
-        await supabase.from("profiles").upsert({ id: user.id });
-      }
+        // ✅ Step 1: Ensure profile record exists or is updated
+        await supabase
+          .from("profiles")
+          .upsert({ id: user.id, email: user.email });
 
-      if (user) {
-        const isNew = user.user_metadata?.is_new_user ?? false;
-        router.replace(isNew ? "/onboarding" : "/voice");
+        const isOnboardingDone =
+          user.user_metadata?.is_onboarding_done ?? false;
+
+        // ✅ Step 2: If user is new, mark them as not new anymore
+        if (isOnboardingDone) {
+          await supabase.auth.updateUser({
+            data: { is_new_user: false },
+          });
+        }
+
+        // ✅ Step 3: Redirect based on new user status
+        router.replace(!isOnboardingDone ? "/onboarding" : "/voice");
       } else {
         router.replace("/login");
       }
@@ -29,9 +40,20 @@ export default function AuthCallbackPage() {
   }, [router]);
 
   return (
-    <Box sx={{ p: 4, textAlign: "center" }}>
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+      }}
+    >
       <CircularProgress />
-      <Typography mt={2}>Verifying your account...</Typography>
+      <Typography mt={2} variant="body1">
+        Verifying your account...
+      </Typography>
     </Box>
   );
 }

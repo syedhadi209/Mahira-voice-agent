@@ -61,18 +61,25 @@ export default function VoiceAgentClient() {
   const [token, setToken] = useState<string | undefined>();
   const [connect, setConnect] = useState(false);
   const [connecting, setConnecting] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
   const serverUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;
 
   useEffect(() => {
     async function fetchToken() {
+      setLoadingData(true);
       try {
-        const t = await getToken(
-          "agent-room",
-          `user-${Math.floor(Math.random() * 10000)}`
-        );
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        console.log(user);
+
+        const t = await getToken("agent-room", `user-${user?.id}`);
         setToken(t);
       } catch (err) {
         console.error("getToken error:", err);
+      } finally {
+        setLoadingData(false);
       }
     }
     fetchToken();
@@ -89,10 +96,18 @@ export default function VoiceAgentClient() {
 
   return (
     <Box sx={sx.main}>
-      <VoiceOrb />
+      <VoiceOrb loading={loadingData} />
 
-      <Box sx={{ position: "absolute", top: 0, right: 0 }}>
-        <Button variant="outlined" onClick={handleLogout}>
+      <Box sx={{ position: "absolute", top: "50px", right: 0 }}>
+        <Button
+          variant="outlined"
+          onClick={handleLogout}
+          sx={{
+            background: "#FFFFFF14",
+            color: "white",
+            textTransform: "none",
+          }}
+        >
           Logout
         </Button>
       </Box>

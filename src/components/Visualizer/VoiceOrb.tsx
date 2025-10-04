@@ -1,17 +1,23 @@
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import React from "react";
 
-const VoiceOrb = () => {
+const VoiceOrb = ({ loading }: { loading: boolean }) => {
   return (
-    <Box
-      sx={{
-        height: "150px",
-        width: "150px",
-        borderRadius: "50%",
-        border: "10px solid white",
-        marginBottom: "200px",
-      }}
-    ></Box>
+    <>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <Box
+          sx={{
+            height: "150px",
+            width: "150px",
+            borderRadius: "50%",
+            border: "10px solid white",
+            marginBottom: "200px",
+          }}
+        ></Box>
+      )}
+    </>
   );
 };
 
