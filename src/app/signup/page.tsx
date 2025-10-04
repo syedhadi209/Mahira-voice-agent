@@ -114,7 +114,11 @@ export default function SignupPage() {
         password,
         options: {
           emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
-          data: { is_new_user: true, is_onboarding_done: false },
+          data: {
+            is_new_user: true,
+            is_onboarding_done: false,
+            onboarding_questions: false,
+          },
         },
       });
 
