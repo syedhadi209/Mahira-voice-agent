@@ -121,8 +121,8 @@ const useStyles = () => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "200px",
-    mt: "100px",
+    height: "100%",
+    pt: "50px",
   },
 });
 

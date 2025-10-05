@@ -20,7 +20,6 @@ const makeStyles = () => ({
     p: 4,
     maxWidth: 400,
     mx: "auto",
-    mt: 6,
     backgroundColor: "white",
     borderTopLeftRadius: "20px",
     borderTopRightRadius: "20px",
@@ -106,8 +105,8 @@ const makeStyles = () => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "200px",
-    mt: "100px",
+    height: "100%",
+    pt: "50px",
   },
   textField: {
     "& .MuiOutlinedInput-root": {

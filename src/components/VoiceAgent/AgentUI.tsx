@@ -1,4 +1,8 @@
-import { useVoiceAssistant, AudioTrack } from "@livekit/components-react";
+import {
+  useVoiceAssistant,
+  AudioTrack,
+  useRoomContext,
+} from "@livekit/components-react";
 import { Box } from "@mui/material";
 import { useEffect } from "react";
 

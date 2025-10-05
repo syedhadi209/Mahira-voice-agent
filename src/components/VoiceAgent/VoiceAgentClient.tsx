@@ -12,6 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { supabase } from "@/lib/supabaseClient";
 import { useSettings } from "@/context/SettingsContext";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import MicController from "./MicController";
 
 const makeStyles = () => ({
   main: {
@@ -175,7 +176,9 @@ export default function VoiceAgentClient() {
   const [connect, setConnect] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
-  const [currentState, setCurrentState] = useState("");
+  const [currentState, setCurrentState] = useState<
+    "connecting" | "thinking" | "listening" | "speaking" | ""
+  >("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [muted, setMuted] = useState(false);
   const [showActionButtons, setShowActionButtons] = useState(
@@ -230,7 +233,13 @@ export default function VoiceAgentClient() {
   return (
     <Box sx={sx.main}>
       {/* Voice Orb always visible */}
-      <VoiceOrb loading={loadingData} />
+      <VoiceOrb
+        loading={loadingData}
+        size="200px"
+        marginLeft="10px"
+        currentState={currentState}
+        marginBottom="40px"
+      />
 
       {/* Three-dot Menu Button */}
       <Box sx={sx.threeDotsBox}>
@@ -300,7 +309,13 @@ export default function VoiceAgentClient() {
         {connect ? (
           <Box sx={sx.btnsBox}>
             {/* Disconnect (X) Button */}
-            <Button onClick={() => setConnect(false)} sx={sx.disconnectBtn}>
+            <Button
+              onClick={() => {
+                setCurrentState("");
+                setConnect(false);
+              }}
+              sx={sx.disconnectBtn}
+            >
               <CloseIcon sx={sx.closeIcon} />
             </Button>
 
