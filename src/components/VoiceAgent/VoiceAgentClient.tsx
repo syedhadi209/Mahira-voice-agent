@@ -6,7 +6,16 @@ import { LiveKitRoom } from "@livekit/components-react";
 import { getToken } from "@/app/actions/getToken";
 import { AgentUI } from "./AgentUI";
 import VoiceOrb from "../Visualizer/VoiceOrb";
-import { Box, Button, CircularProgress, Grow, IconButton } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grow,
+  IconButton,
+  Snackbar,
+  SnackbarCloseReason,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import CloseIcon from "@mui/icons-material/Close";
 import { supabase } from "@/lib/supabaseClient";
@@ -56,7 +65,7 @@ const makeStyles = () => ({
     display: "flex",
     width: "100%",
     bottom: visible ? "63.43px" : "-200px",
-    justifyContent: "space-between",
+    justifyContent: "center",
     padding: "0 22px",
     transition: "bottom 0.8s ease-in-out",
   }),
@@ -157,7 +166,6 @@ const makeStyles = () => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    // ml: 1.2,
     "&:hover": { backgroundColor: "white" },
   },
   mainMicBtn: { position: "relative", display: "flex", alignItems: "center" },
@@ -176,6 +184,7 @@ export default function VoiceAgentClient() {
   const [connect, setConnect] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
+  const [open, setOpen] = useState(false);
   const [currentState, setCurrentState] = useState<
     "connecting" | "thinking" | "listening" | "speaking" | ""
   >("");
@@ -225,13 +234,38 @@ export default function VoiceAgentClient() {
   };
 
   const handleShare = async () => {
-    await navigator.clipboard.writeText("Check out this amazing voice agent!");
+    await navigator.clipboard.writeText(
+      "https://mahira-nine.vercel.app/signup"
+    );
+    setOpen(true);
   };
 
-  console.log(currentState);
+  const handleClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <Typography>Link copied to clipboard.</Typography>
+    </React.Fragment>
+  );
 
   return (
     <Box sx={sx.main}>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Link copied to clipboard."
+      />
       {/* Voice Orb always visible */}
       <VoiceOrb
         loading={loadingData}
@@ -261,51 +295,15 @@ export default function VoiceAgentClient() {
 
       {/* ✅ Animated Action Buttons */}
       <Box sx={sx.actionBtnsBox(showActionButtons)}>
-        <Button sx={sx.actionBtns(false)}>
+        {/* <Button sx={sx.actionBtns(false)}>
           <Image
             src="/icons/chat_icon.svg"
             alt="chat icon"
             width={32.17}
             height={28.96}
           />
-        </Button>
+        </Button> */}
 
-        {/* {connect ? (
-          <Button sx={sx.actionBtns(connect)} onClick={() => setConnect(false)}>
-            {connecting ? (
-              <CircularProgress size={23} sx={{ color: "black" }} />
-            ) : (
-              <CloseIcon
-                sx={{ color: "#B11215", width: 17.68, height: 17.68 }}
-              />
-            )}
-          </Button>
-        ) : (
-          <Box
-            sx={{ position: "relative", display: "flex", alignItems: "center" }}
-          >
-            {fromOnboardingScreen && <Box sx={sx.tooltip}>Tap to talk</Box>}
-            <Button
-              sx={sx.actionBtns(false)}
-              onClick={() => {
-                setFromOnboardingScreen(false);
-                setConnecting(true);
-                setConnect(true);
-              }}
-            >
-              {connecting ? (
-                <CircularProgress size={23} sx={{ color: "white" }} />
-              ) : (
-                <Image
-                  src="/icons/mic_icon.svg"
-                  alt="chat icon"
-                  width={22.52}
-                  height={32.17}
-                />
-              )}
-            </Button>
-          </Box>
-        )} */}
         {connect ? (
           <Box sx={sx.btnsBox}>
             {/* Disconnect (X) Button */}
@@ -363,7 +361,13 @@ export default function VoiceAgentClient() {
             token={token}
             serverUrl={serverUrl}
             connect={!!token}
-            audio
+            audio={{
+              autoGainControl: true,
+              noiseSuppression: false,
+              echoCancellation: true,
+              sampleRate: 48000,
+              channelCount: 1,
+            }}
             onConnected={() => setConnecting(false)}
           >
             <AgentUI setCurrentState={setCurrentState} />
