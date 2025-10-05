@@ -167,16 +167,17 @@ const OnboardingPage = () => {
           data: { user },
         } = await supabase.auth.getUser();
 
-        const { data, error } = await supabase
-          .from("onboarding_details")
-          .insert([
-            {
-              user_id: user?.id,
-              full_name: values.name,
-              occupation: values.occupation,
-              interests: values.interests,
-            },
-          ]);
+        await supabase.from("onboarding_details").insert([
+          {
+            user_id: user?.id,
+            full_name: values.name,
+            occupation: values.occupation,
+            interests: values.interests,
+          },
+        ]);
+        await supabase.auth.updateUser({
+          data: { is_new_user: false, is_onboarding_done: true },
+        });
         setFromOnboardingScreen(true);
         router.push("/voice");
       } catch (error) {

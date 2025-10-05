@@ -13,6 +13,7 @@ import { Formik, Form, Field } from "formik";
 import { SignupSchema } from "@/utils/validations/Auth";
 import Link from "next/link";
 import VoiceOrb from "@/components/Visualizer/VoiceOrb";
+import { useRouter } from "next/navigation";
 
 const makeStyles = () => ({
   main: {
@@ -136,6 +137,7 @@ const makeStyles = () => ({
 });
 
 export default function SignupPage() {
+  const router = useRouter();
   const sx = makeStyles();
   const [formMessage, setFormMessage] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -180,6 +182,7 @@ export default function SignupPage() {
       setFormMessage(
         "Signup successful! Please check your inbox and verify your email to activate your account."
       );
+      router.push("/onboarding");
     } catch (err: any) {
       setFormError(err.message);
     } finally {

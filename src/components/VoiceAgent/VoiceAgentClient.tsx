@@ -6,11 +6,12 @@ import { LiveKitRoom } from "@livekit/components-react";
 import { getToken } from "@/app/actions/getToken";
 import { AgentUI } from "./AgentUI";
 import VoiceOrb from "../Visualizer/VoiceOrb";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress, Grow, IconButton } from "@mui/material";
 import Image from "next/image";
 import CloseIcon from "@mui/icons-material/Close";
 import { supabase } from "@/lib/supabaseClient";
-import { useSettings } from "@/context/SettingsContext"; // ✅ import your context
+import { useSettings } from "@/context/SettingsContext";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 const makeStyles = () => ({
   main: {
@@ -98,6 +99,30 @@ const makeStyles = () => ({
       "50%": { transform: "translate(-50%, -5px)" },
     },
   },
+  popupMenu: {
+    position: "absolute",
+    top: "50px",
+    right: "10px",
+    background: "#FFFFFF14",
+    borderRadius: "8px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px",
+    padding: "8px 0",
+    minWidth: "120px",
+    zIndex: 100,
+    boxShadow: "none",
+    border: "1px solid #FFFFFF17",
+  },
+  menuButton: {
+    color: "white",
+    textTransform: "none",
+    justifyContent: "flex-start",
+    px: 2,
+    "&:hover": {
+      background: "#FFFFFF22",
+    },
+  },
 });
 
 export default function VoiceAgentClient() {
@@ -107,6 +132,7 @@ export default function VoiceAgentClient() {
   const [connect, setConnect] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [showActionButtons, setShowActionButtons] = useState(
     !fromOnboardingScreen
   ); // ✅ hidden initially if onboarding
@@ -150,24 +176,38 @@ export default function VoiceAgentClient() {
     }
   };
 
+  const handleShare = async () => {
+    await navigator.clipboard.writeText("Check out this amazing voice agent!");
+  };
+
   return (
     <Box sx={sx.main}>
       {/* Voice Orb always visible */}
       <VoiceOrb loading={loadingData} />
 
-      {/* Logout Button */}
-      <Box sx={{ position: "absolute", top: "50px", right: 0 }}>
-        <Button
-          variant="outlined"
-          onClick={handleLogout}
+      {/* Three-dot Menu Button */}
+      <Box sx={{ position: "absolute", top: "40px", right: "10px" }}>
+        <IconButton
+          onClick={() => setMenuOpen(!menuOpen)}
           sx={{
-            background: "#FFFFFF14",
             color: "white",
-            textTransform: "none",
+            background: "#FFFFFF14",
+            "&:hover": { background: "#FFFFFF25" },
           }}
         >
-          Logout
-        </Button>
+          <MoreHorizIcon />
+        </IconButton>
+
+        <Grow in={menuOpen}>
+          <Box sx={sx.popupMenu}>
+            <Button sx={sx.menuButton} onClick={handleLogout}>
+              Logout
+            </Button>
+            <Button sx={sx.menuButton} onClick={handleShare}>
+              Share
+            </Button>
+          </Box>
+        </Grow>
       </Box>
 
       {/* ✅ Animated Action Buttons */}
