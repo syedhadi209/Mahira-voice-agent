@@ -13,13 +13,13 @@ const rotateAnticlockwise = keyframes`
 `;
 
 const makeStyles = () => ({
-  mainBox: {
+  mainBox: (mb: string) => ({
     position: "relative",
     width: "200px",
     height: "200px",
-    mb: "100px",
+    mb,
     ml: "50px",
-  },
+  }),
   circles: (
     opacity: string,
     top: string = "auto",
@@ -46,7 +46,13 @@ const makeStyles = () => ({
   }),
 });
 
-const VoiceOrb = ({ loading }: { loading: boolean }) => {
+const VoiceOrb = ({
+  loading,
+  marginBottom = "100px",
+}: {
+  loading: boolean;
+  marginBottom?: string;
+}) => {
   const sx = makeStyles();
 
   return (
@@ -54,7 +60,7 @@ const VoiceOrb = ({ loading }: { loading: boolean }) => {
       {loading ? (
         <CircularProgress />
       ) : (
-        <Box sx={sx.mainBox}>
+        <Box sx={sx.mainBox(marginBottom)}>
           {/* Outer Circle - clockwise */}
           <Box
             sx={sx.circles(

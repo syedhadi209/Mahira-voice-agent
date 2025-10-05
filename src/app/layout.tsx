@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeRegistry from "@/theme/ThemeRegistry";
 import ProtectedRoute from "@/components/Auth/ProtectedRoute";
+import { SettingsProvider } from "@/context/SettingsContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +29,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ThemeRegistry>
-          <ProtectedRoute>{children}</ProtectedRoute>
+          <ProtectedRoute>
+            <SettingsProvider>{children}</SettingsProvider>
+          </ProtectedRoute>
         </ThemeRegistry>
       </body>
     </html>

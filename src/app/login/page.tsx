@@ -7,27 +7,27 @@ import {
   Box,
   Button,
   CircularProgress,
-  Divider,
   TextField,
   Typography,
 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GoogleIcon from "@mui/icons-material/Google";
 import { LoginSchema } from "@/utils/validations/Auth";
+import VoiceOrb from "@/components/Visualizer/VoiceOrb";
 
 const useStyles = () => ({
   main: {
     p: 4,
-    maxWidth: 380,
-    mx: "auto",
-    mt: 6,
+    maxWidth: 400,
     backgroundColor: "white",
-    borderRadius: 3,
+    borderTopLeftRadius: "20px",
+    borderTopRightRadius: "20px",
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     boxShadow: 3,
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    alignItems: "start",
+    justifyContent: "center",
   },
   title: {
     fontWeight: 700,
@@ -85,6 +85,45 @@ const useStyles = () => ({
     fontWeight: 500,
     color: "primary.main",
   },
+  textField: {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "8px",
+      "& fieldset": {
+        borderColor: "#ccc",
+      },
+      "&:hover fieldset": {
+        borderColor: "#6B4DE6",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#4F46E5",
+        borderWidth: "2px",
+      },
+    },
+    "& .MuiInputBase-input": {
+      color: "black",
+      fontSize: "14px",
+      padding: "12px",
+    },
+    "& .MuiFormHelperText-root": {
+      color: "#B11215",
+      fontSize: "12px",
+      marginLeft: "0",
+    },
+  },
+  mainContainer: {
+    height: "100vh",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "column",
+  },
+  orbBox: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "200px",
+    mt: "100px",
+  },
 });
 
 export default function LoginPage() {
@@ -125,110 +164,90 @@ export default function LoginPage() {
   };
 
   return (
-    <Box sx={sx.main}>
-      {/* Header */}
-      <Typography variant="h5" sx={sx.title}>
-        Welcome Back
-      </Typography>
-      <Typography variant="body2" sx={sx.subtitle}>
-        Sign in to continue your journey
-      </Typography>
-
-      {/* Social Buttons */}
-      <Button
-        fullWidth
-        variant="outlined"
-        startIcon={<FacebookIcon sx={{ color: "#1877F2" }} />}
-        sx={sx.socialBtn}
-      >
-        Continue with Facebook
-      </Button>
-      <Button
-        fullWidth
-        variant="outlined"
-        startIcon={<GoogleIcon sx={{ color: "#DB4437" }} />}
-        sx={{ ...sx.socialBtn, mb: 2 }}
-      >
-        Continue with Google
-      </Button>
-
-      {/* Divider */}
-      <Box sx={sx.dividerBox}>
-        <Divider sx={{ flexGrow: 1 }} />
-        <Typography variant="body2" sx={sx.dividerText}>
-          or
-        </Typography>
-        <Divider sx={{ flexGrow: 1 }} />
+    <Box sx={sx.mainContainer}>
+      <Box sx={sx.orbBox}>
+        <VoiceOrb loading={false} marginBottom="0px" />
       </Box>
+      <Box sx={sx.main}>
+        {/* Header */}
+        <Typography variant="h5" sx={sx.title}>
+          Login
+        </Typography>
+        <Typography variant="body2" sx={sx.subtitle}>
+          Apnay dost sai baat karne kai liye login kare
+        </Typography>
 
-      {/* Formik Login Form */}
-      <Formik
-        initialValues={{ email: "", password: "" }}
-        validationSchema={LoginSchema}
-        onSubmit={handleLogin}
-      >
-        {({ errors, touched, handleChange }) => (
-          <Form style={{ width: "100%" }}>
-            <Field
-              as={TextField}
-              name="email"
-              placeholder="Enter Your Email ID"
-              fullWidth
-              margin="normal"
-              onChange={handleChange}
-              error={touched.email && Boolean(errors.email)}
-              helperText={touched.email && errors.email}
-            />
+        {/* Formik Login Form */}
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={LoginSchema}
+          onSubmit={handleLogin}
+        >
+          {({ errors, touched, handleChange }) => (
+            <Form style={{ width: "100%" }}>
+              <Field
+                as={TextField}
+                name="email"
+                placeholder="Enter Your Email ID"
+                fullWidth
+                margin="normal"
+                onChange={handleChange}
+                error={touched.email && Boolean(errors.email)}
+                helperText={touched.email && errors.email}
+                sx={sx.textField}
+              />
 
-            <Field
-              as={TextField}
-              name="password"
-              placeholder="Password"
-              type="password"
-              fullWidth
-              margin="normal"
-              onChange={handleChange}
-              error={touched.password && Boolean(errors.password)}
-              helperText={touched.password && errors.password}
-            />
+              <Field
+                as={TextField}
+                name="password"
+                placeholder="Password"
+                type="password"
+                fullWidth
+                margin="normal"
+                onChange={handleChange}
+                error={touched.password && Boolean(errors.password)}
+                helperText={touched.password && errors.password}
+                sx={sx.textField}
+              />
 
-            <Typography variant="body2" sx={sx.forgetText}>
-              Forgot Password?
-            </Typography>
+              {/* <Typography variant="body2" sx={sx.forgetText}>
+                Forgot Password?
+              </Typography> */}
 
-            {formError && (
-              <Typography color="error" mt={2}>
-                {formError}
-              </Typography>
-            )}
-
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              sx={sx.submitBtn}
-              disabled={loading}
-            >
-              {loading ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                "Login"
+              {formError && (
+                <Typography color="error" mt={2}>
+                  {formError}
+                </Typography>
               )}
-            </Button>
 
-            <Typography variant="body2" sx={sx.bottomText}>
-              Don’t have an account?{" "}
-              <Typography
-                component="span"
-                sx={sx.linkText}
-                onClick={() => router.push("/signup")}
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={sx.submitBtn}
+                disabled={loading}
               >
-                Create one
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Login"
+                )}
+              </Button>
+
+              <Typography variant="body2" sx={sx.bottomText}>
+                Don’t have an account?{" "}
+                <Typography
+                  component="span"
+                  sx={sx.linkText}
+                  onClick={() => router.push("/signup")}
+                >
+                  Create one
+                </Typography>
               </Typography>
-            </Typography>
-          </Form>
-        )}
-      </Formik>
+            </Form>
+          )}
+        </Formik>
+      </Box>
     </Box>
   );
 }
