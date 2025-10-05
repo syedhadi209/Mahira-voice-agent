@@ -123,19 +123,64 @@ const makeStyles = () => ({
       background: "#FFFFFF22",
     },
   },
+  btnsBox: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    background: "#ECE3F3",
+    borderRadius: "35px",
+    padding: "0px 4.43px",
+    width: "137px",
+    height: "73px",
+    position: "relative",
+    transition: "all 0.3s ease",
+  },
+  disconnectBtn: {
+    minWidth: 0,
+    width: "42px",
+    height: "42px",
+    backgroundColor: "transparent",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    ml: "10px",
+    "&:hover": { backgroundColor: "#F4EFFF" },
+  },
+  closeIcon: { color: "#B11215", fontSize: "35px" },
+  muteBtn: {
+    minWidth: 0,
+    width: "67px",
+    height: "67px",
+    borderRadius: "50%",
+    backgroundColor: "white",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    // ml: 1.2,
+    "&:hover": { backgroundColor: "white" },
+  },
+  mainMicBtn: { position: "relative", display: "flex", alignItems: "center" },
+  iconBtn: {
+    color: "white",
+    background: "#FFFFFF14",
+    "&:hover": { background: "#FFFFFF25" },
+  },
+  threeDotsBox: { position: "absolute", top: "40px", right: "10px" },
 });
 
 export default function VoiceAgentClient() {
   const sx = makeStyles();
-  const { fromOnboardingScreen, setFromOnboardingScreen } = useSettings(); // ✅ use context
+  const { fromOnboardingScreen, setFromOnboardingScreen } = useSettings();
   const [token, setToken] = useState<string | undefined>();
   const [connect, setConnect] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
+  const [currentState, setCurrentState] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [muted, setMuted] = useState(false);
   const [showActionButtons, setShowActionButtons] = useState(
     !fromOnboardingScreen
-  ); // ✅ hidden initially if onboarding
+  );
   const serverUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;
 
   // Fetch token
@@ -180,21 +225,16 @@ export default function VoiceAgentClient() {
     await navigator.clipboard.writeText("Check out this amazing voice agent!");
   };
 
+  console.log(currentState);
+
   return (
     <Box sx={sx.main}>
       {/* Voice Orb always visible */}
       <VoiceOrb loading={loadingData} />
 
       {/* Three-dot Menu Button */}
-      <Box sx={{ position: "absolute", top: "40px", right: "10px" }}>
-        <IconButton
-          onClick={() => setMenuOpen(!menuOpen)}
-          sx={{
-            color: "white",
-            background: "#FFFFFF14",
-            "&:hover": { background: "#FFFFFF25" },
-          }}
-        >
+      <Box sx={sx.threeDotsBox}>
+        <IconButton onClick={() => setMenuOpen(!menuOpen)} sx={sx.iconBtn}>
           <MoreHorizIcon />
         </IconButton>
 
@@ -221,7 +261,7 @@ export default function VoiceAgentClient() {
           />
         </Button>
 
-        {connect ? (
+        {/* {connect ? (
           <Button sx={sx.actionBtns(connect)} onClick={() => setConnect(false)}>
             {connecting ? (
               <CircularProgress size={23} sx={{ color: "black" }} />
@@ -256,6 +296,48 @@ export default function VoiceAgentClient() {
               )}
             </Button>
           </Box>
+        )} */}
+        {connect ? (
+          <Box sx={sx.btnsBox}>
+            {/* Disconnect (X) Button */}
+            <Button onClick={() => setConnect(false)} sx={sx.disconnectBtn}>
+              <CloseIcon sx={sx.closeIcon} />
+            </Button>
+
+            {/* Mute / Unmute Button */}
+            <Button onClick={() => setMuted((prev) => !prev)} sx={sx.muteBtn}>
+              <Image
+                src={muted ? "/icons/mic_off.svg" : "/icons/mic_on.svg"}
+                alt="mic toggle"
+                width={25}
+                height={25}
+              />
+            </Button>
+          </Box>
+        ) : (
+          // existing microphone button remains unchanged
+          <Box sx={sx.mainMicBtn}>
+            {fromOnboardingScreen && <Box sx={sx.tooltip}>Tap to talk</Box>}
+            <Button
+              sx={sx.actionBtns(false)}
+              onClick={() => {
+                setFromOnboardingScreen(false);
+                setConnecting(true);
+                setConnect(true);
+              }}
+            >
+              {connecting ? (
+                <CircularProgress size={23} sx={{ color: "white" }} />
+              ) : (
+                <Image
+                  src="/icons/mic_icon.svg"
+                  alt="chat icon"
+                  width={22.52}
+                  height={32.17}
+                />
+              )}
+            </Button>
+          </Box>
         )}
       </Box>
 
@@ -269,7 +351,7 @@ export default function VoiceAgentClient() {
             audio
             onConnected={() => setConnecting(false)}
           >
-            <AgentUI />
+            <AgentUI setCurrentState={setCurrentState} />
           </LiveKitRoom>
         </Box>
       )}

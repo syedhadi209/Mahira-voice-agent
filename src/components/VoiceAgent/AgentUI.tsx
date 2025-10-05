@@ -1,10 +1,15 @@
 import { useVoiceAssistant, AudioTrack } from "@livekit/components-react";
 import { Box } from "@mui/material";
+import { useEffect } from "react";
 
-export const AgentUI = () => {
+export const AgentUI = ({ setCurrentState }: any) => {
   const { state, audioTrack } = useVoiceAssistant();
 
-  console.log(state);
+  useEffect(() => {
+    if (state) {
+      setCurrentState(state);
+    }
+  }, [state]);
 
   return (
     <Box sx={{ padding: 20 }}>
