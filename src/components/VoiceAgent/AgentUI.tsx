@@ -1,22 +1,20 @@
-import {
-  useVoiceAssistant,
-  AudioTrack,
-  useRoomContext,
-} from "@livekit/components-react";
+import { useVoiceAssistant, AudioTrack } from "@livekit/components-react";
 import { Box } from "@mui/material";
-import { useEffect } from "react";
+import VoiceOrb from "../Visualizer/VoiceOrb";
 
-export const AgentUI = ({ setCurrentState }: any) => {
+export const AgentUI = ({ loadingData }: any) => {
   const { state, audioTrack } = useVoiceAssistant();
-
-  useEffect(() => {
-    if (state) {
-      setCurrentState(state);
-    }
-  }, [state]);
 
   return (
     <Box sx={{ padding: 20 }}>
+      {/* Voice Orb always visible */}
+      <VoiceOrb
+        loading={loadingData}
+        size="200px"
+        marginLeft="10px"
+        currentState={state}
+        marginBottom="40px"
+      />
       {audioTrack && <AudioTrack trackRef={audioTrack} />}
     </Box>
   );

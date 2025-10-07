@@ -69,7 +69,13 @@ const VoiceOrb = ({
   marginBottom?: string;
   size?: string;
   marginLeft?: string;
-  currentState?: "connecting" | "thinking" | "listening" | "speaking" | "";
+  currentState?:
+    | "connecting"
+    | "thinking"
+    | "listening"
+    | "speaking"
+    | ""
+    | any;
 }) => {
   const sx = makeStyles();
 
@@ -100,9 +106,9 @@ const VoiceOrb = ({
     stateColors[currentState || "default"] || stateColors.default;
 
   return (
-    <>
+    <Box>
       {loading ? (
-        <CircularProgress />
+        <CircularProgress sx={{ color: "white" }} />
       ) : (
         <Box
           sx={{
@@ -164,7 +170,7 @@ const VoiceOrb = ({
           <Typography sx={sx.stateText}>{currentState || ""}</Typography>
         </Box>
       )}
-    </>
+    </Box>
   );
 };
 
