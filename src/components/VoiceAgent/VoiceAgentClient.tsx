@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import "@livekit/components-styles";
-import { LiveKitRoom } from "@livekit/components-react";
 import { getToken } from "@/app/actions/getToken";
 import { AgentUI } from "./AgentUI";
 import {
@@ -101,7 +100,7 @@ export default function VoiceAgentClient() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      const t = await getToken("agent-room", `user-${user?.id}`);
+      const t = await getToken(`${user?.id}`);
       setToken(t);
       await connectToRoom(t, serverUrl as string);
     } catch (err) {
@@ -185,28 +184,6 @@ export default function VoiceAgentClient() {
           connecting={connecting}
           setToken={setToken}
         />
-
-        {/* <LiveKitRoom
-          key={token}
-          token={token}
-          serverUrl={serverUrl}
-          connect={!!token}
-          audio
-          onConnected={() => {
-            console.log("Successfully connected to the room.");
-            setConnecting(false);
-          }}
-          onDisconnected={() => {
-            console.log("Disconnected from the room.");
-            setConnecting(false);
-          }}
-          onError={(error) => {
-            console.error("LiveKit connection error:", error);
-            setConnecting(false);
-          }}
-        >
-          
-        </LiveKitRoom> */}
       </Box>
     </Box>
   );
