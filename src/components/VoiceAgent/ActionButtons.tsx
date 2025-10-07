@@ -7,6 +7,7 @@ import { useSettings } from "@/context/SettingsContext";
 import { useConnectionState, useRoomContext } from "@livekit/components-react";
 import { ConnectionState } from "livekit-client";
 import { useState } from "react";
+import { useLiveKit } from "@/context/LiveKitContext";
 
 const makeStyles = () => ({
   actionBtnsBox: (visible: boolean) => ({
@@ -106,26 +107,34 @@ const ActionButtons = ({
   showActionButtons,
   fetchToken,
   setConnecting,
-  connecting,
+  setToken,
 }: any) => {
   const sx = makeStyles();
   const { fromOnboardingScreen, setFromOnboardingScreen } = useSettings();
-  const [isMuted, setIsMuted] = useState(false);
+  const {
+    connectionState,
+    room,
+    toggleMute,
+    isMuted,
+    disconnectFromRoom,
+    connecting,
+  } = useLiveKit();
+  //   const [isMuted, setIsMuted] = useState(false);
 
-  const room = useRoomContext();
-  const connectionState = useConnectionState(room);
+  //   const room = useRoomContext();
+  //   const connectionState = useConnectionState(room);
 
-  const toggleMute = async () => {
-    if (!room) return;
+  //   const toggleMute = async () => {
+  //     if (!room) return;
 
-    try {
-      const newMutedState = !isMuted;
-      await room.localParticipant.setMicrophoneEnabled(!newMutedState);
-      setIsMuted(newMutedState);
-    } catch (error) {
-      console.error("Error toggling mute:", error);
-    }
-  };
+  //     try {
+  //       const newMutedState = !isMuted;
+  //       await room.localParticipant.setMicrophoneEnabled(!newMutedState);
+  //       setIsMuted(newMutedState);
+  //     } catch (error) {
+  //       console.error("Error toggling mute:", error);
+  //     }
+  //   };
 
   return (
     <Box sx={sx.actionBtnsBox(showActionButtons)}>
@@ -141,7 +150,13 @@ const ActionButtons = ({
       {connectionState == ConnectionState.Connected ? (
         <Box sx={sx.btnsBox}>
           {/* Disconnect (X) Button */}
-          <Button sx={sx.disconnectBtn} onClick={() => room.disconnect()}>
+          <Button
+            sx={sx.disconnectBtn}
+            onClick={async () => {
+              await disconnectFromRoom();
+              //   setToken(undefined);
+            }}
+          >
             <CloseIcon sx={sx.closeIcon} />
           </Button>
 

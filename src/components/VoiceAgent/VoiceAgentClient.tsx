@@ -17,6 +17,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useSettings } from "@/context/SettingsContext";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ActionButtons from "./ActionButtons";
+import { useLiveKit } from "@/context/LiveKitContext";
 
 const makeStyles = () => ({
   main: {
@@ -82,6 +83,8 @@ const makeStyles = () => ({
 export default function VoiceAgentClient() {
   const sx = makeStyles();
   const { fromOnboardingScreen, setFromOnboardingScreen } = useSettings();
+  const { connectToRoom, disconnectFromRoom, connectionState } = useLiveKit();
+
   const [token, setToken] = useState<string | undefined>();
   const [connecting, setConnecting] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
@@ -100,6 +103,7 @@ export default function VoiceAgentClient() {
       } = await supabase.auth.getUser();
       const t = await getToken("agent-room", `user-${user?.id}`);
       setToken(t);
+      await connectToRoom(t, serverUrl as string);
     } catch (err) {
       console.error("getToken error:", err);
     } finally {
@@ -173,7 +177,17 @@ export default function VoiceAgentClient() {
           </Grow>
         </Box>
 
-        <LiveKitRoom
+        <AgentUI loadingData={loadingData} />
+        <ActionButtons
+          showActionButtons={showActionButtons}
+          fetchToken={fetchToken}
+          setConnecting={setConnecting}
+          connecting={connecting}
+          setToken={setToken}
+        />
+
+        {/* <LiveKitRoom
+          key={token}
           token={token}
           serverUrl={serverUrl}
           connect={!!token}
@@ -191,15 +205,8 @@ export default function VoiceAgentClient() {
             setConnecting(false);
           }}
         >
-          <AgentUI loadingData={loadingData} />
-          <ActionButtons
-            showActionButtons={showActionButtons}
-            fetchToken={fetchToken}
-            setConnecting={setConnecting}
-            connecting={connecting}
-          />
-        </LiveKitRoom>
-        {/* ✅ Animated Action Buttons */}
+          
+        </LiveKitRoom> */}
       </Box>
     </Box>
   );

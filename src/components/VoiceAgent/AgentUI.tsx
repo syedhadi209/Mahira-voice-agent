@@ -1,9 +1,9 @@
-import { useVoiceAssistant, AudioTrack } from "@livekit/components-react";
 import { Box } from "@mui/material";
 import VoiceOrb from "../Visualizer/VoiceOrb";
+import { useLiveKit } from "@/context/LiveKitContext";
 
 export const AgentUI = ({ loadingData }: any) => {
-  const { state, audioTrack } = useVoiceAssistant();
+  const { audioTrack, agentState } = useLiveKit();
 
   return (
     <Box sx={{ padding: 20 }}>
@@ -12,10 +12,20 @@ export const AgentUI = ({ loadingData }: any) => {
         loading={loadingData}
         size="200px"
         marginLeft="10px"
-        currentState={state}
+        currentState={agentState}
         marginBottom="40px"
       />
-      {audioTrack && <AudioTrack trackRef={audioTrack} />}
+      {/* {audioTrack && <AudioTrack trackRef={audioTrack} />} */}
+      {audioTrack && (
+        <audio
+          ref={(el) => {
+            if (el && audioTrack) {
+              audioTrack.attach(el);
+            }
+          }}
+          autoPlay
+        />
+      )}
     </Box>
   );
 };

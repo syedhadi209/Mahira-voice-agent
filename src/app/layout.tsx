@@ -4,6 +4,7 @@ import "./globals.css";
 import ThemeRegistry from "@/theme/ThemeRegistry";
 import ProtectedRoute from "@/components/Auth/ProtectedRoute";
 import { SettingsProvider } from "@/context/SettingsContext";
+import { LiveKitProvider } from "@/context/LiveKitContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ThemeRegistry>
           <ProtectedRoute>
-            <SettingsProvider>{children}</SettingsProvider>
+            <SettingsProvider>
+              <LiveKitProvider>{children}</LiveKitProvider>
+            </SettingsProvider>
           </ProtectedRoute>
         </ThemeRegistry>
       </body>
